@@ -46,9 +46,41 @@ m_size(0, 0)
 
 
 ////////////////////////////////////////////////////////////
-Image::~Image()
+Image::Image(Image&& other) noexcept :
+m_size(other.m_size),
+m_pixels(std::move(other.m_pixels))
 {
+    other.m_pixels = {};
+}
 
+
+////////////////////////////////////////////////////////////
+Image::Image(const Image& other) :
+m_size(other.m_size)
+{
+    create(m_size.x, m_size.y, other.m_pixels.data());
+}
+
+
+////////////////////////////////////////////////////////////
+Image::~Image() = default;
+
+
+////////////////////////////////////////////////////////////
+Image& Image::operator=(const Image& other)
+{
+    m_size = other.m_size;
+    create(m_size.x, m_size.y, other.m_pixels.data());
+    return *this;
+}
+
+////////////////////////////////////////////////////////////
+Image& Image::operator=(Image&& other) noexcept
+{
+    m_size = other.m_size;
+    m_pixels = std::move(other.m_pixels);
+    other = Image();
+    return *this;
 }
 
 
@@ -274,7 +306,7 @@ void Image::setPixel(unsigned int x, unsigned int y, const Color& color)
 Color Image::getPixel(unsigned int x, unsigned int y) const
 {
     const Uint8* pixel = &m_pixels[(x + y * m_size.x) * 4];
-    return Color(pixel[0], pixel[1], pixel[2], pixel[3]);
+    return {pixel[0], pixel[1], pixel[2], pixel[3]};
 }
 
 
@@ -283,12 +315,12 @@ const Uint8* Image::getPixelsPtr() const
 {
     if (!m_pixels.empty())
     {
-        return &m_pixels[0];
+        return m_pixels.data();
     }
     else
     {
         err() << "Trying to access the pixels of an empty image" << std::endl;
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -302,8 +334,8 @@ void Image::flipHorizontally()
 
         for (std::size_t y = 0; y < m_size.y; ++y)
         {
-            std::vector<Uint8>::iterator left = m_pixels.begin() + y * rowSize;
-            std::vector<Uint8>::iterator right = m_pixels.begin() + (y + 1) * rowSize - 4;
+            auto left = m_pixels.begin() + y * rowSize;
+            auto right = m_pixels.begin() + (y + 1) * rowSize - 4;
 
             for (std::size_t x = 0; x < m_size.x / 2; ++x)
             {
@@ -324,8 +356,8 @@ void Image::flipVertically()
     {
         std::size_t rowSize = m_size.x * 4;
 
-        std::vector<Uint8>::iterator top = m_pixels.begin();
-        std::vector<Uint8>::iterator bottom = m_pixels.end() - rowSize;
+        auto top = m_pixels.begin();
+        auto bottom = m_pixels.end() - rowSize;
 
         for (std::size_t y = 0; y < m_size.y / 2; ++y)
         {
@@ -336,5 +368,6 @@ void Image::flipVertically()
         }
     }
 }
+
 
 } // namespace sf
