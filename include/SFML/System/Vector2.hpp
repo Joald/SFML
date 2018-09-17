@@ -26,6 +26,8 @@
 #define SFML_VECTOR2_HPP
 
 
+#include <type_traits>
+
 namespace sf
 {
 ////////////////////////////////////////////////////////////
@@ -106,6 +108,19 @@ Vector2<T>& operator +=(Vector2<T>& left, const Vector2<T>& right);
 
 ////////////////////////////////////////////////////////////
 /// \relates Vector2
+/// \brief Overload of binary operator +=
+///
+/// \param left  Left operand (a vector)
+/// \param right Right operand (a scalar value)
+///
+/// \return Reference to \a left
+///
+////////////////////////////////////////////////////////////
+template<typename T>
+Vector2<T>& operator +=(Vector2<T>& left, T right);
+
+////////////////////////////////////////////////////////////
+/// \relates Vector2
 /// \brief Overload of binary operator -=
 ///
 /// This operator performs a memberwise subtraction of both vectors,
@@ -122,6 +137,19 @@ Vector2<T>& operator -=(Vector2<T>& left, const Vector2<T>& right);
 
 ////////////////////////////////////////////////////////////
 /// \relates Vector2
+/// \brief Overload of binary operator -=
+///
+/// \param left  Left operand (a vector)
+/// \param right Right operand (a scalar value)
+///
+/// \return Reference to \a left
+///
+////////////////////////////////////////////////////////////
+template<typename T>
+Vector2<T>& operator -=(Vector2<T>& left, T right);
+
+////////////////////////////////////////////////////////////
+/// \relates Vector2
 /// \brief Overload of binary operator +
 ///
 /// \param left  Left operand (a vector)
@@ -132,6 +160,35 @@ Vector2<T>& operator -=(Vector2<T>& left, const Vector2<T>& right);
 ////////////////////////////////////////////////////////////
 template <typename T>
 Vector2<T> operator +(const Vector2<T>& left, const Vector2<T>& right);
+
+
+////////////////////////////////////////////////////////////
+/// \relates Vector2
+/// \brief Overload of binary operator +
+///
+/// \param left  Left operand (a vector)
+/// \param right Right operand (a scalar value)
+///
+/// \return Memberwise addition of the value to the vector
+///
+////////////////////////////////////////////////////////////
+template<typename T>
+Vector2<T> operator +(const Vector2<T>& left, T right);
+
+
+////////////////////////////////////////////////////////////
+/// \relates Vector2
+/// \brief Overload of binary operator -
+///
+/// \param left  Left operand (a vector)
+/// \param right Right operand (a scalar value)
+///
+/// \return Memberwise subtraction of the value from the vector
+///
+////////////////////////////////////////////////////////////
+template<typename T>
+Vector2<T> operator -(const Vector2<T>& left, T right);
+
 
 ////////////////////////////////////////////////////////////
 /// \relates Vector2
